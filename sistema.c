@@ -14,13 +14,13 @@ typedef struct Cliente Cliente;
 void inserir_cliente(Cliente *vetor){
 
 	printf("Digite o nome do cliente: ");
-	scanf("%s", vetor->nome);
+	scanf("%250[^\n]s", vetor->nome);
 	setbuf(stdin, NULL);
 	printf("Digite o telefone do cliente: ");
-	scanf("%s", vetor->telefone);
+	scanf("%250[^\n]s", vetor->telefone);
 	setbuf(stdin, NULL);
 	printf("Digite o email do cliente: ");
-	scanf("%s", vetor->email);
+	scanf("%250[^\n]s", vetor->email);
 }
 
 //PARTE DA CONTA
@@ -33,6 +33,7 @@ typedef struct Conta Conta;
 
 int pesquisar(Conta *vetor, int tamanho_vetor, int pes){
 
+	// "%250[^\n]s"
 	int i;	
 	for (i = 0; i < tamanho_vetor; i++)
 	{
@@ -46,26 +47,26 @@ void inserir_conta(Conta *vetor, int *tamanho){
 
 	int p, n;
 
-	//// LEMBRAR QUE VOCÊ DEVE RETIRAR O VETOR-> NUMERO E SUBSTITUIR POR UMA VARIAVEL ANTES DE CONFERIR
-
 	printf("\n\nDigite o número da conta: ");
-	scanf("%d", &vetor->numero);
-	p = pesquisar(vetor, *tamanho, vetor->numero);
+	scanf("%d", &n);
+	p = pesquisar(vetor, *tamanho, n);
 
 	while (p >= 0)
 	{
 		printf("JA EXISTE UMA CONTA COM ESSE NUMERO!!!!");
 		printf("\n\nDigite o número da conta: ");
-		scanf("%d", &vetor->numero);
-		p = pesquisar(vetor, *tamanho, vetor->numero);
-		printf("%d\n\n", p);
+		scanf("%d", &n);
+		p = pesquisar(vetor, *tamanho, n);
 	}
+
+	vetor[*tamanho].numero = n;
 	
 	setbuf(stdin, NULL);
 	printf("Digite o saldo da conta: ");
-	scanf("%f", &vetor->saldo);
+	scanf("%f", &vetor[*tamanho].saldo);
 	setbuf(stdin, NULL);
-	inserir_cliente(&vetor->cliente);
+	inserir_cliente(&vetor[*tamanho].cliente);
+	setbuf(stdin, NULL);
 	(*tamanho)++;
 }
 
@@ -91,11 +92,30 @@ int menu() {
 	return op;
 }
 
+// FUNÇÃO LISTAR
+void listar(Conta *vetor, int tamanho){
+	
+	int i;
+
+	for ( i = 0; i < tamanho; i++)
+	{
+		printf("NUMERO DA CONTA: %d\n", vetor[i].numero);
+		printf("SALDO DA CONTA: R$%.2f\n", vetor[i].saldo);
+		printf("NOME DO CLIENTE: %s\n", vetor[i].cliente.nome);
+		printf("NUMERO DO CLIENTE: %s\n", vetor[i].cliente.telefone);
+		printf("EMAIL DO CLIENTE: %s\n", vetor[i].cliente.email);
+		printf("\n");
+	}
+	
+
+}
+
 int main() {
 
 	//VETOR PARA AS CONTAS;
 	Conta conta[100];
-	int tamanho_vetor = 0;
+	int tamanho_vetor, pes, p;
+	tamanho_vetor = 0;
 
 	int op;
 	do {
@@ -110,7 +130,15 @@ int main() {
 				break;
 			case 2:
 				// PESQUISAR POR CODIGO/MATRICULA
-				//pesquisar(conta, tamanho_vetor);
+				printf("número da conta: ");
+				scanf("%d", &pes);
+				p = pesquisar(conta, tamanho_vetor, pes);
+				if (p > 0){
+					printf("Conta encontrada!!!");
+				}
+				else{
+					printf("Essa conta não existe");
+					}
 				break;
 			case 3:
 				// PESQUISAR POR NOME
@@ -126,6 +154,7 @@ int main() {
 				break;
 			case 7:
 				// LISTAR
+				listar(conta, tamanho_vetor);
 				break;
 			default:
 				printf ("\n\nOpçãoo inválida!\n\n");
