@@ -96,7 +96,6 @@ int menu() {
 void listar(Conta *vetor, int tamanho){
 	
 	int i;
-
 	for ( i = 0; i < tamanho; i++)
 	{
 		printf("NUMERO DA CONTA: %d\n", vetor[i].numero);
@@ -106,8 +105,25 @@ void listar(Conta *vetor, int tamanho){
 		printf("EMAIL DO CLIENTE: %s\n", vetor[i].cliente.email);
 		printf("\n");
 	}
-	
+}
 
+// FUNÇÃO PESQUISAR POR NOME
+void pesquisar_nome(Conta *vetor, int tamanho){
+	int i;
+	char nome [30];
+
+	printf("\nDigite o nome: ");
+
+	//TERMINAR DE FAZER A COMPARE STRINGS
+
+	//scanf("30%[^\n]s", )
+
+	for ( i = 0; i < tamanho; i++)
+	{
+		/* code */
+
+	}
+	
 }
 
 int main() {
