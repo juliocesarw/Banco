@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 
 //PARTE DO CLIENTE
@@ -88,6 +89,7 @@ int menu() {
 	do {
 		printf("Escolha sua opção: ");
 		scanf(" %d", &op);
+		setbuf(stdin, NULL);
 	} while(op < 0 || op > 7);
 	return op;
 }
@@ -108,23 +110,25 @@ void listar(Conta *vetor, int tamanho){
 }
 
 // FUNÇÃO PESQUISAR POR NOME
-void pesquisar_nome(Conta *vetor, int tamanho){
-	int i;
-	char nome [30];
+int pesquisar_nome(Conta *vetor, int tamanho){
 
-	printf("\nDigite o nome: ");
+	int i, pes;	
+	char nome[30];
 
-	//TERMINAR DE FAZER A COMPARE STRINGS
+	printf("Nome do Cliente: ");
+	scanf("%30[^\n]s", nome);
 
-	//scanf("30%[^\n]s", )
-
-	for ( i = 0; i < tamanho; i++)
+	for (i = 0; i < tamanho; i++)
 	{
-		/* code */
-
+		pes = strcmp(vetor->cliente.nome, nome);
+		if (pes == 0){
+			return 1;
+		}
 	}
-	
+	return -1;
+
 }
+
 
 int main() {
 
@@ -158,6 +162,14 @@ int main() {
 				break;
 			case 3:
 				// PESQUISAR POR NOME
+				p = pesquisar_nome(conta, tamanho_vetor);
+				if (p == 0){
+					printf("Conta encontrada!!!");
+				}
+				else{
+					printf("Essa conta não existe");
+					}
+				break;
 				break;
 			case 4:
 				// ATUALIZAR
