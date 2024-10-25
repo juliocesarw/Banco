@@ -109,24 +109,41 @@ void listar(Conta *vetor, int tamanho){
 	}
 }
 
+// FUNÇÃO PARA DEIXAR A O NOME NO FORMATO TITLE
+
+void nome_para_title(Conta *vetor, int tamanho){
+
+	int i, space;
+	for ( i = 1; i < tamanho; i++)
+	toupper(vetor->cliente.nome[0]);
+	{
+		space = isspace(vetor->cliente.nome[i]);
+		if (space > 0){
+			toupper(vetor->cliente.nome[i + 1]);
+		}
+	}
+}
+
 // FUNÇÃO PESQUISAR POR NOME
 int pesquisar_nome(Conta *vetor, int tamanho){
 
 	int i, pes;	
 	char nome[30];
+	int tamanho_nome = strlen(nome);
 
 	printf("Nome do Cliente: ");
 	scanf("%30[^\n]s", nome);
-
+	nome_para_title(nome, tamanho_nome);
+	
 	for (i = 0; i < tamanho; i++)
 	{
-		pes = strcmp(vetor->cliente.nome, nome);
+		nome_para_title(vetor[i].cliente.nome, tamanho);
+		pes = strcmp(vetor[i].cliente.nome, nome);
 		if (pes == 0){
 			return 1;
 		}
 	}
 	return -1;
-
 }
 
 
