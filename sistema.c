@@ -35,7 +35,6 @@ typedef struct Conta Conta;
 
 int pesquisar(Conta *vetor, int tamanho_vetor, int pes){
 
-	// "%250[^\n]s"
 	int i;	
 	for (i = 0; i < tamanho_vetor; i++)
 	{
@@ -107,26 +106,24 @@ void listar(Conta *vetor, int i){
 }
 
 // FUNÇÃO PESQUISAR POR NOME
-// int pesquisar_nome(Conta *vetor, int tamanho){
+int pesquisar_nome(Conta *vetor, int tamanho){
 
-// 	int i, pes;	
-// 	char nome[30];
-// 	int tamanho_nome = strlen(nome);
+	// "%250[^\n]s"
+	char pes[30];
 
-// 	printf("Nome do Cliente: ");
-// 	scanf("%30[^\n]s", nome);
-// 	nome_para_title(nome, tamanho_nome);
-	
-// 	for (i = 0; i < tamanho; i++)
-// 	{
-// 		nome_para_title(vetor[i].cliente.nome, tamanho);
-// 		pes = strcmp(vetor[i].cliente.nome, nome);
-// 		if (pes == 0){
-// 			return 1;
-// 		}
-// 	}
-// 	return -1;
-// }
+	printf("Digite o nome a pesquisar: ");
+	scanf("%30[^\n]s", pes);
+
+	int i;	
+	for (i = 0; i < tamanho; i++)
+	{
+		if ((strcmp(pes, vetor[i].cliente.nome) == 0)){
+			return i;
+		}
+	}
+	return -1;
+
+}
 
 void pesquisar_por_matricula(Conta *vetor, int tamanho){
 
@@ -148,7 +145,7 @@ int main() {
 
 	//VETOR PARA AS CONTAS;
 	Conta conta[100];
-	int tamanho_vetor;
+	int tamanho_vetor, p;
 	tamanho_vetor = 0;
 
 	int op;
@@ -167,14 +164,16 @@ int main() {
 				pesquisar_por_matricula(conta, tamanho_vetor);
 				break;
 			case 3:
-				// PESQUISAR POR NOME
-				// p = pesquisar_nome(conta, tamanho_vetor);
-				// if (p == 0){
-				// 	printf("Conta encontrada!!!");
-				// }
-				// else{
-				// 	printf("Essa conta não existe");
-				// 	}
+				//PESQUISAR POR NOME
+				p = pesquisar_nome(conta, tamanho_vetor);
+				if (p >= 0){
+					printf("\nConta encontrada!!!\n\n");
+					listar(conta,p);
+				}
+				else{
+					printf("\nEssa conta não existe\n\n");
+				}
+
 				break;
 			case 4:
 				// ATUALIZAR
