@@ -22,6 +22,7 @@ void inserir_cliente(Cliente *vetor){
 	setbuf(stdin, NULL);
 	printf("Digite o email do cliente: ");
 	scanf("%250[^\n]s", vetor->email);
+	setbuf(stdin, NULL);
 }
 
 //PARTE DA CONTA
@@ -39,7 +40,7 @@ int pesquisar(Conta *vetor, int tamanho_vetor, int pes){
 	for (i = 0; i < tamanho_vetor; i++)
 	{
 		if (pes == vetor[i].numero){
-			return 1;
+			return i;
 		}
 	}
 	return -1;
@@ -59,10 +60,9 @@ void inserir_conta(Conta *vetor, int *tamanho){
 		scanf("%d", &n);
 		p = pesquisar(vetor, *tamanho, n);
 	}
-
 	vetor[*tamanho].numero = n;
-	
 	setbuf(stdin, NULL);
+	
 	printf("Digite o saldo da conta: ");
 	scanf("%f", &vetor[*tamanho].saldo);
 	setbuf(stdin, NULL);
@@ -95,63 +95,60 @@ int menu() {
 }
 
 // FUNÇÃO LISTAR
-void listar(Conta *vetor, int tamanho){
+void listar(Conta *vetor, int i){
 	
-	int i;
-	for ( i = 0; i < tamanho; i++)
-	{
-		printf("NUMERO DA CONTA: %d\n", vetor[i].numero);
-		printf("SALDO DA CONTA: R$%.2f\n", vetor[i].saldo);
-		printf("NOME DO CLIENTE: %s\n", vetor[i].cliente.nome);
-		printf("NUMERO DO CLIENTE: %s\n", vetor[i].cliente.telefone);
-		printf("EMAIL DO CLIENTE: %s\n", vetor[i].cliente.email);
-		printf("\n");
-	}
-}
-
-// FUNÇÃO PARA DEIXAR A O NOME NO FORMATO TITLE
-
-void nome_para_title(Conta *vetor, int tamanho){
-
-	int i, space;
-	for ( i = 1; i < tamanho; i++)
-	toupper(vetor->cliente.nome[0]);
-	{
-		space = isspace(vetor->cliente.nome[i]);
-		if (space > 0){
-			toupper(vetor->cliente.nome[i + 1]);
-		}
-	}
+	printf("NUMERO DA CONTA: %d\n", vetor[i].numero);
+	printf("SALDO DA CONTA: R$%.2f\n", vetor[i].saldo);
+	printf("NOME DO CLIENTE: %s\n", vetor[i].cliente.nome);
+	printf("NUMERO DO CLIENTE: %s\n", vetor[i].cliente.telefone);
+	printf("EMAIL DO CLIENTE: %s\n", vetor[i].cliente.email);
+	printf("\n");
+	
 }
 
 // FUNÇÃO PESQUISAR POR NOME
-int pesquisar_nome(Conta *vetor, int tamanho){
+// int pesquisar_nome(Conta *vetor, int tamanho){
 
-	int i, pes;	
-	char nome[30];
-	int tamanho_nome = strlen(nome);
+// 	int i, pes;	
+// 	char nome[30];
+// 	int tamanho_nome = strlen(nome);
 
-	printf("Nome do Cliente: ");
-	scanf("%30[^\n]s", nome);
-	nome_para_title(nome, tamanho_nome);
+// 	printf("Nome do Cliente: ");
+// 	scanf("%30[^\n]s", nome);
+// 	nome_para_title(nome, tamanho_nome);
 	
-	for (i = 0; i < tamanho; i++)
-	{
-		nome_para_title(vetor[i].cliente.nome, tamanho);
-		pes = strcmp(vetor[i].cliente.nome, nome);
-		if (pes == 0){
-			return 1;
-		}
-	}
-	return -1;
-}
+// 	for (i = 0; i < tamanho; i++)
+// 	{
+// 		nome_para_title(vetor[i].cliente.nome, tamanho);
+// 		pes = strcmp(vetor[i].cliente.nome, nome);
+// 		if (pes == 0){
+// 			return 1;
+// 		}
+// 	}
+// 	return -1;
+// }
 
+void pesquisar_por_matricula(Conta *vetor, int tamanho){
+
+	int p, pes;
+	
+	printf("número da conta: ");
+	scanf("%d", &pes);
+	p = pesquisar(vetor, tamanho, pes);
+	if (p >= 0){
+		printf("\nConta encontrada!!!\n\n");
+		listar(vetor,p);
+	}
+	else{
+		printf("\nEssa conta não existe\n\n");
+		}
+}
 
 int main() {
 
 	//VETOR PARA AS CONTAS;
 	Conta conta[100];
-	int tamanho_vetor, pes, p;
+	int tamanho_vetor;
 	tamanho_vetor = 0;
 
 	int op;
@@ -167,26 +164,17 @@ int main() {
 				break;
 			case 2:
 				// PESQUISAR POR CODIGO/MATRICULA
-				printf("número da conta: ");
-				scanf("%d", &pes);
-				p = pesquisar(conta, tamanho_vetor, pes);
-				if (p > 0){
-					printf("Conta encontrada!!!");
-				}
-				else{
-					printf("Essa conta não existe");
-					}
+				pesquisar_por_matricula(conta, tamanho_vetor);
 				break;
 			case 3:
 				// PESQUISAR POR NOME
-				p = pesquisar_nome(conta, tamanho_vetor);
-				if (p == 0){
-					printf("Conta encontrada!!!");
-				}
-				else{
-					printf("Essa conta não existe");
-					}
-				break;
+				// p = pesquisar_nome(conta, tamanho_vetor);
+				// if (p == 0){
+				// 	printf("Conta encontrada!!!");
+				// }
+				// else{
+				// 	printf("Essa conta não existe");
+				// 	}
 				break;
 			case 4:
 				// ATUALIZAR
@@ -199,7 +187,10 @@ int main() {
 				break;
 			case 7:
 				// LISTAR
-				listar(conta, tamanho_vetor);
+				for (int i = 0; i < tamanho_vetor; i++)
+				{
+					listar(conta, i);
+				}
 				break;
 			default:
 				printf ("\n\nOpçãoo inválida!\n\n");
