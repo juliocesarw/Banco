@@ -236,7 +236,7 @@ int main() {
 
 	//VETOR PARA AS CONTAS;
 	Conta conta[100];
-	int tamanho_vetor, p;
+	int tamanho_vetor, p, i;
 	tamanho_vetor = 0;
 
 	int op;
@@ -279,7 +279,7 @@ int main() {
 				break;
 			case 7:
 				// LISTAR
-				for (int i = 0; i < tamanho_vetor; i++)
+				for (i = 0; i < tamanho_vetor; i++)
 				{
 					listar(conta, i);
 				}
