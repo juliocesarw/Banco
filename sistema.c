@@ -25,6 +25,7 @@ void inserir_cliente(Cliente *vetor){
 	setbuf(stdin, NULL);
 }
 
+
 //PARTE DA CONTA
 struct Conta{
 	int numero;
@@ -32,6 +33,7 @@ struct Conta{
 	Cliente cliente;
 };
 typedef struct Conta Conta;
+
 
 int pesquisar(Conta *vetor, int tamanho_vetor, int pes){
 
@@ -44,12 +46,18 @@ int pesquisar(Conta *vetor, int tamanho_vetor, int pes){
 	}
 	return -1;
 }
+
+// FUNÇÃO PARA DIGITAR O NUMERO DA CONTA
+int numero_da_conta(int *x){
+	printf("\n\nDigite o número da conta: ");
+	scanf("%d", &(*x));
+	return *x;
+}
 void inserir_conta(Conta *vetor, int *tamanho){
 
 	int p, n;
 
-	printf("\n\nDigite o número da conta: ");
-	scanf("%d", &n);
+	numero_da_conta(&n);
 	p = pesquisar(vetor, *tamanho, n);
 
 	while (p >= 0)
@@ -67,6 +75,7 @@ void inserir_conta(Conta *vetor, int *tamanho){
 	setbuf(stdin, NULL);
 	inserir_cliente(&vetor[*tamanho].cliente);
 	setbuf(stdin, NULL);
+
 	(*tamanho)++;
 }
 
@@ -96,7 +105,7 @@ int menu() {
 // FUNÇÃO LISTAR
 void listar(Conta *vetor, int i){
 	
-	printf("NUMERO DA CONTA: %d\n", vetor[i].numero);
+	printf("\nNUMERO DA CONTA: %d\n", vetor[i].numero);
 	printf("SALDO DA CONTA: R$%.2f\n", vetor[i].saldo);
 	printf("NOME DO CLIENTE: %s\n", vetor[i].cliente.nome);
 	printf("NUMERO DO CLIENTE: %s\n", vetor[i].cliente.telefone);
@@ -105,19 +114,39 @@ void listar(Conta *vetor, int i){
 	
 }
 
+//FUNÇÃO PARA TRANFORMAR TODOS OS CARACTERES EM MINUSCULOS
+
+void caractere_minusculo(char *vetor){
+
+	int i, tamanho;
+	tamanho = strlen(vetor);
+
+	for ( i = 0; i < tamanho; i++)
+	{
+		vetor[i] = tolower(vetor[i]);
+	}
+}
+
 // FUNÇÃO PESQUISAR POR NOME
 int pesquisar_nome(Conta *vetor, int tamanho){
 
-	// "%250[^\n]s"
-	char pes[30];
+	char pes[100];
+	char str1[100];	// STRING PARA RECEBER O NOME A PESQUISAR
+	char str2[100]; //STRING PARA RECEBER O NOME DO CLIENTE
 
-	printf("Digite o nome a pesquisar: ");
+	printf("\nDigite o nome a pesquisar: ");
 	scanf("%30[^\n]s", pes);
+
+	strcpy(str1, pes);
+	caractere_minusculo(str1); // TRANSFORMANDO TODA A STRING EM MINUSCULA PARA PESQUISAR
 
 	int i;	
 	for (i = 0; i < tamanho; i++)
 	{
-		if ((strcmp(pes, vetor[i].cliente.nome) == 0)){
+		strcpy(str2, ""); // REINICIANDO A STR2 PARA QUE AO FAZER O LOOP ELA INICIE SEM ERRO
+		strcpy(str2, vetor[i].cliente.nome);
+		caractere_minusculo(str2); // TRANSFORMANDO TODA A STRING EM MINUSCULA PARA PESQUISAR
+		if ((strcmp(str1, str2) == 0)){
 			return i;
 		}
 	}
@@ -128,9 +157,8 @@ int pesquisar_nome(Conta *vetor, int tamanho){
 void pesquisar_por_matricula(Conta *vetor, int tamanho){
 
 	int p, pes;
-	
-	printf("número da conta: ");
-	scanf("%d", &pes);
+
+	numero_da_conta(&pes);
 	p = pesquisar(vetor, tamanho, pes);
 	if (p >= 0){
 		printf("\nConta encontrada!!!\n\n");
@@ -139,6 +167,69 @@ void pesquisar_por_matricula(Conta *vetor, int tamanho){
 	else{
 		printf("\nEssa conta não existe\n\n");
 		}
+}
+
+// FUNÇÃO PARA ATUALIZAR SALDO
+void atualizar_saldo(Conta *vetor, int tamanho){
+
+	int numero, op, pes;
+	float valor;
+	
+	do {
+		numero_da_conta(&numero);
+		pes = pesquisar(vetor, tamanho, numero);
+	} while (pes < 0);
+	
+	do{
+		printf("\nO que voce deseja:\n\n[0] - SACAR\n[1] - DEPOSITAR\n\nOPCAO: ");
+		scanf("%d", &op);
+	} while((op != 0) && (op != 1));
+
+	printf("Informe o valor: ");
+	scanf("%f", &valor);
+
+	if (op == 0){
+		vetor[pes].saldo = vetor[pes].saldo - valor;
+	}
+	else{
+		vetor[pes].saldo = vetor[pes].saldo + valor;
+	}
+
+}
+
+// FUNÇÃO PARA SABER QUAL CLIENTE TEM O MAIOR SALDO
+void maior(Conta *vetor, int tamanho){
+
+	int i, cliente, maior;
+	maior = 0;
+
+	for ( i = 0; i < tamanho; i++)
+	{
+		if (vetor[i].saldo > maior){
+			cliente = i;
+			maior = vetor[i].saldo;
+		}		
+	}
+
+	printf("\n\nO Cliente com maior saldo e:");
+	listar(vetor, cliente);
+}
+
+// FUNÇÃO PARA EXCLUIR CLIENTE
+
+void excluir(Conta *vetor, int *tamanho){
+
+	int i, n, pes;
+
+	numero_da_conta(&n);
+	pes = pesquisar(vetor, *tamanho, n);
+
+	for ( i = pes; i < *tamanho; i++)
+	{
+		vetor[i] = vetor[i + 1];
+	}
+	(*tamanho)--;
+	
 }
 
 int main() {
@@ -173,16 +264,18 @@ int main() {
 				else{
 					printf("\nEssa conta não existe\n\n");
 				}
-
 				break;
 			case 4:
 				// ATUALIZAR
+				atualizar_saldo(conta, tamanho_vetor);
 				break;
 			case 5:
 				// MAIOR
+				maior(conta, tamanho_vetor);
 				break;
 			case 6:
 				// EXCLUIR
+				excluir(conta, &tamanho_vetor);
 				break;
 			case 7:
 				// LISTAR
