@@ -102,10 +102,10 @@ int menu() {
 	return op;
 }
 
-// FUNÇÃO LISTAR
+// FUNï¿½ï¿½O LISTAR
 void listar(Conta *vetor, int i){
 	
-	printf("\nNÚMERO DA CONTA: %d\n", vetor[i].numero);
+	printf("\nNúMERO DA CONTA: %d\n", vetor[i].numero);
 	printf("SALDO DA CONTA: R$%.2f\n", vetor[i].saldo);
 	printf("NOME DO CLIENTE: %s\n", vetor[i].cliente.nome);
 	printf("NÚMERO DO CLIENTE: %s\n", vetor[i].cliente.telefone);
@@ -169,7 +169,7 @@ void pesquisar_por_matricula(Conta *vetor, int tamanho){
 		}
 }
 
-// FUNÇÃO PARA ATUALIZAR SALDO
+// FUNï¿½ï¿½O PARA ATUALIZAR SALDO
 void atualizar_saldo(Conta *vetor, int tamanho){
 
 	int numero, op, pes;
@@ -224,15 +224,44 @@ void excluir(Conta *vetor, int *tamanho){
 	numero_da_conta(&n);
 	pes = pesquisar(vetor, *tamanho, n);
 
+	while (pes < 0)
+	{
+		printf("\n\nDIGITE UM NÚMERO DE CONTA EXISTENTE\n");
+		numero_da_conta(&n);
+		pes = pesquisar(vetor, *tamanho, n);
+	}
+	
 	for ( i = pes; i < *tamanho; i++)
 	{
 		vetor[i] = vetor[i + 1];
 	}
 	(*tamanho)--;
-
-	printf("\n\nCONTA EXCLUÍDA!!!!\n\n");
-	
+	printf("\n\nCONTA EXCLUIDA!!!!\n\n");
 }
+
+FILE * abrir_arquivo(char * arquivo, char * modo){
+
+	FILE * arq;
+	arq = fopen(arquivo, modo);
+	return arq;
+
+}
+ void carregar_arquivo(Conta *vetor, int * tamanho){
+	FILE * arq;
+	arq = abrir_arquivo("../arquivo.bin", "rb");
+	fread(tamanho, sizeof(int), 1, arq);
+	fread(vetor, sizeof(Conta), *tamanho, arq);
+	fclose(arq);
+ }
+
+ void descarregar_arquivo(Conta *vetor, int tamanho){
+	
+	FILE * arq;
+	arq = abrir_arquivo("../arquivo.bin","wb");
+	fwrite(&tamanho, sizeof(int), 1, arq);
+	fwrite(vetor, sizeof(Conta), tamanho, arq);
+	fclose(arq);
+ }
 
 int main() {
 
@@ -244,12 +273,16 @@ int main() {
 	int tamanho_vetor, p, i;
 	tamanho_vetor = 0;
 
+	//CARREGANDO O ARQUIVO
+	carregar_arquivo(conta, &tamanho_vetor);
+
 	int op;
 	do {
 		op = menu();
 		switch ( op ) {
 			case 0:
-				// SAIR. NÃO PRECISA FAZER NADA
+				// SAIR.
+				descarregar_arquivo(conta, tamanho_vetor);
 				return 0;
 			case 1:
 				// INSERIR
@@ -267,7 +300,7 @@ int main() {
 					listar(conta,p);
 				}
 				else{
-					printf("\nEssa conta não existe\n\n");
+					printf("\nEssa conta NÃO existe\n\n");
 				}
 				break;
 			case 4:
@@ -290,7 +323,7 @@ int main() {
 				}
 				break;
 			default:
-				printf ("\n\nOpçãoo inválida!\n\n");
+				printf ("\nOpção inválida!\n\n");
 		}
 
 		system("PAUSE");  // Windows
